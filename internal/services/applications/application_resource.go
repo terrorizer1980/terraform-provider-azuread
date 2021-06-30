@@ -148,7 +148,7 @@ func applicationResource() *schema.Resource {
 						},
 
 						"requested_access_token_version": {
-							Description: "Specifies the access token version expected by this resource",
+							Description: "The access token version expected by this resource",
 							Type:        schema.TypeInt,
 							Optional:    true,
 							Default:     1,
@@ -420,6 +420,12 @@ func applicationResource() *schema.Resource {
 				Optional:    true,
 				Default:     false,
 			},
+
+			"disabled_by_microsoft_status": {
+				Description: "Whether Microsoft has disabled the registered application",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -586,6 +592,7 @@ func applicationResourceRead(ctx context.Context, d *schema.ResourceData, meta i
 	tf.Set(d, "api", flattenApplicationApi(app.Api, d.Get("api.#").(int) > 0, false))
 	tf.Set(d, "app_role", flattenApplicationAppRoles(app.AppRoles))
 	tf.Set(d, "application_id", app.AppId)
+	tf.Set(d, "disabled_by_microsoft_status", fmt.Sprintf("%v", app.DisabledByMicrosoftStatus))
 	tf.Set(d, "display_name", app.DisplayName)
 	tf.Set(d, "fallback_public_client_enabled", app.IsFallbackPublicClient)
 	tf.Set(d, "group_membership_claims", flattenApplicationGroupMembershipClaims(app.GroupMembershipClaims))
